@@ -11,3 +11,7 @@ https://github.com/ichiro-art/ch32v003_ds1307_clock
 https://github.com/c3am/resistive-BMS
 https://github.com/shakir-abdo/CH32V003J4M6-uart/tree/main/src
 https://github.com/Keisuke-Hongyo/IRReciver/tree/main/src
+
+điều khiển motor qua serial
+https://github.com/ycan78/CH32V003F4P6
+
