@@ -1,0 +1,34 @@
+Lệnh:
+
+TIM1->PSC = 48000 - 1;
+
+✅ Ý nghĩa
+
+PSC là Prescaler (bộ chia tần số) của Timer. Nó dùng để giảm tần số đầu vào của bộ đếm Timer xuống một giá trị nhỏ hơn, dễ tính toán thời gian.
+  số 1 thực chất là để chỉ ra rằng lưu lại kết quả chia tần số
+ch32v003 f mặc định 48M
+tần số sau chia = 48M/48000 = 1000Hz
+  Sau khi chia, Timer tăng 1 đơn vị mỗi 1 ms.
+// Enable clock for TIM1
+    RCC->APB2PCENR |= RCC_APB2Periph_TIM1;
+
+    TIM1->PSC = 48000 - 1;   // Prescaler (48MHz / 48000 = 1kHz)
+    TIM1->ATRLR = 500 - 1;   // Auto-reload (500 ticks = 500ms)
+    TIM1->CTLR1 |= TIM_CEN;  // Enable counter
+    TIM1->DMAINTENR |= TIM_INT_UP;  // Enable update interrupt
+
+    NVIC_EnableIRQ(TIM1_UP_IRQn);
+Hệ thống Clock (48 MHz)
+       │
+       ▼
+  Prescaler (PSC = 48000 - 1)
+       │  Chia 48 MHz / 48000
+       ▼
+   Timer Clock = 1 kHz (1 ms mỗi tick)
+       │
+       ▼
+   Auto-Reload (ARR = 500 - 1)
+       │  Đếm 500 tick (500 × 1 ms)
+       ▼
+   Ngắt xảy ra mỗi 500 ms (0.5 giây)
+
