@@ -15,3 +15,6 @@ https://github.com/Keisuke-Hongyo/IRReciver/tree/main/src
 điều khiển motor qua serial
 https://github.com/ycan78/CH32V003F4P6
 
+nrf24l01
+
+https://git.c3pb.de/ahorn/ch32v003fun/-/tree/4d74869c009ebe2cc2d7c2c892cf9212bf9e90d8/examples/spi_24L01_tx
