@@ -1,3 +1,4 @@
+https://youtu.be/LcPfUYLC9L4?si=t3wY9MH_6RQ6ghd_
 # Ch32v003
 https://github.com/cnlohr/ch32fun/issues/152
 https://github.com/74th/ch32v003-book-code
