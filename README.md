@@ -26,3 +26,4 @@ https://github.com/wagiminator/CH32V003-I2C-Knob.git
 https://github.com/wagiminator/ATtiny412-BatteryCapacityTester
 
 ##https://github.com/sshahryiar/CH32-RISC-V-Tutorials
+https://github.com/MoonFox2006
