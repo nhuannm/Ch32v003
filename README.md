@@ -1,3 +1,6 @@
+ch32v003 rất nhiều ứng dụng:
+http://blog.livedoor.jp/yokoshima_m/archives/cat_400619.html
+
 Curious Scientist https://youtu.be/LcPfUYLC9L4?si=t3wY9MH_6RQ6ghd_
 # Ch32v003
 https://github.com/cnlohr/ch32fun/issues/152
