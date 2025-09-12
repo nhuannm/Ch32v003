@@ -1,3 +1,17 @@
+#2025-09-12
+- PA1/A0/ADC_Channel_0, PA2/A1/ADC_Channel_1 2 chân này dùng để kết nối dao động ngoài 48Mhz. Nếu muốn sử dụng để ADC phải tắt chức năng lấy dao động ngoài là HSE, chỉ chạy HSI
+- ==> Trong system_ch32v00x.c phải khai báo HSI
+  * Uncomment the line corresponding to the desired System clock (SYSCLK) frequency (after 
+* reset the HSI is used as SYSCLK source).
+* If none of the define below is enabled, the HSI is used as System clock source. 
+//#define SYSCLK_FREQ_8MHz_HSI    8000000
+//#define SYSCLK_FREQ_24MHZ_HSI   HSI_VALUE
+//#define SYSCLK_FREQ_48MHZ_HSI   48000000 //nếu dùng PA1, PA2 làm IO
+//#define SYSCLK_FREQ_8MHz_HSE    8000000
+//#define SYSCLK_FREQ_24MHz_HSE   HSE_VALUE
+//#define SYSCLK_FREQ_48MHz_HSE   48000000 //default
+
+###
 ch32v003 rất nhiều ứng dụng:
 http://blog.livedoor.jp/yokoshima_m/archives/cat_400619.html
 
