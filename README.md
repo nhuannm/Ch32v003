@@ -11,6 +11,21 @@
 //#define SYSCLK_FREQ_24MHz_HSE   HSE_VALUE
 //#define SYSCLK_FREQ_48MHz_HSE   48000000 //default
 
+Trong CH32FUN khai báo funconf.h
+#ifndef _FUNCONFIG_H
+#define _FUNCONFIG_H
+#define FUNCONF_USE_UARTPRINTF 1  // Enable UART printf
+#define FUNCONF_UART_PRINTF_BAUD 9600
+#define FUNCONF_USE_HSI 1 //dùng PA1, PA2 như IO
+#define FUNCONF_SYSTICK_USE_HCLK 1
+#define SSD1306_128X64
+#define I2C_PINOUT_DEFAULT
+#define I2C_PINOUT_DEFAULT
+#define CH32V003           1
+
+#endif
+///
+
 ###
 ch32v003 rất nhiều ứng dụng:
 http://blog.livedoor.jp/yokoshima_m/archives/cat_400619.html
