@@ -1,3 +1,5 @@
+https://github.com/sshahryiar/CH32-RISC-V-Tutorials/tree/main
+
 #2025-09-12
 - PA1/A0/ADC_Channel_0, PA2/A1/ADC_Channel_1 2 chân này dùng để kết nối dao động ngoài 48Mhz. Nếu muốn sử dụng để ADC phải tắt chức năng lấy dao động ngoài là HSE, chỉ chạy HSI
 - ==> Trong system_ch32v00x.c phải khai báo HSI
