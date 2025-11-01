@@ -1,0 +1,21 @@
+sử dụng chân PA1-PA2-PD7
+cấu hình CH32V003_PA1_PA2_PD7 làm chân đầu vào/đầu ra đa năng.\\
+
+cấu hình CH32V003_PA1_PA2_PD7 làm chân đầu vào/đầu ra đa năng.
+
+https://blog.csdn.net/colin988/article/details/144292585?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522e99670e575c43bcd35d5ce629bc25d97%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fall.%2522%257D&request_id=e99670e575c43bcd35d5ce629bc25d97&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~first_rank_ecpm_v1~rank_v31_ecpm-22-144292585-null-null.nonlogin&utm_term=CH32V003&spm=1018.2226.3001.4187
+
+system_ch32v00x.c
+//#define SYSCLK_FREQ_8MHz_HSI    8000000
+//#define SYSCLK_FREQ_24MHZ_HSI   HSI_VALUE
+#define SYSCLK_FREQ_48MHZ_HSI   48000000 
+//#define SYSCLK_FREQ_8MHz_HSE    8000000
+//#define SYSCLK_FREQ_24MHz_HSE   HSE_VALUE
+//#define SYSCLK_FREQ_48MHz_HSE   48000000 //default
+và thay đổi chức năng chân
+// Bật Clock cho GPIOA và AFIO (Alternate Function I/O)
+RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_AFIO, ENABLE);
+// Tắt chức năng Remap PA1/PA2 (Chuyển từ chức năng OSC sang GPIO)
+// CH32V003 sử dụng bit PA1_2_REMAP trong AFIO->PCFR1 (Bit 15)
+// Thư viện WCH/MRS thường có hằng số: AFIO_PCFR1_PA12_REMAP
+GPIO_PinRemapConfig(AFIO_PCFR1_PA12_REMAP, DISABLE);
