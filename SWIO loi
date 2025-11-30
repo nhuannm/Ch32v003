@@ -1,0 +1,7 @@
+khôi phục chân SWIO PD1 khi không kết nối được do code đã sử dụng
+"Then power up the bricked CH32V as quick as possible after the command excuted, for example, plug the usb cable to PC host quickly. You may need to try several times to succeed and it will erase all code flash of bricked CH32V."
+mở WCH LINK
+1.kết nối VCC, GND, SWIO
+2. kiểm tra kết nối WCH
+3. ngắt VCC vào CH32V003
+4. thực hiện lênh clear code flash và kết nối cấp nguồn CH32V càng nhanh càng tốt.
