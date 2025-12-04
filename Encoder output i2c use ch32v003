@@ -59,3 +59,89 @@ boolean encoder_isPressed() {
   return(Wire.read()); // trả về kết quả byte thứ 3
 }
 
+##CH32
+void I2C1_EV_IRQHandler(void) {
+//star1, star2 Đây là hai thanh ghi trạng thái (Status Register 1 và 2) của bộ I2C1.
+//Chúng chứa các cờ (flags) cho biết loại sự kiện I2C nào đã kích hoạt ngắt (ví dụ: nhận địa chỉ, nhận/gửi byte, điều kiện dừng)
+//
+  uint16_t star1, star2 __attribute__((unused));
+  star1 = I2C1->STAR1; //
+  star2 = I2C1->STAR2;
+
+  // Address match handler, đúng địa chỉ I2C ko?
+  if(star1 & I2C_STAR1_ADDR) {
+    I2C_REG_ptr   = 0;                            // reset register pointer
+    #if I2C_REG_SLCT > 0 //Nó báo hiệu rằng byte dữ liệu đầu tiên Master gửi tới sẽ được dùng để chọn địa chỉ thanh ghi (I2C_REG_ptr) chứ không phải dữ liệu thực tế.
+    I2C_FLAG_reg  = 1;                            // first byte will be reg ptr
+    #endif
+  }
+
+  // Byte received handler
+  if(star1 & I2C_STAR1_RXNE) { //Cờ Receive Data Register Not Empty được đặt khi một byte dữ liệu đã được Master gửi thành công và nằm trong thanh ghi dữ liệu (DATAR) ==> đọc dữ liệu
+    #if I2C_REG_SLCT > 0 //đọc dữ liệu, ko phải địa chỉ
+    if(I2C_FLAG_reg) {
+      I2C_REG_ptr = I2C1->DATAR;                  // read register address (pointer)
+      I2C_FLAG_reg = 0;                           // next bytes will be data
+    }
+    else
+    #endif
+    {
+      I2C_REG[I2C_REG_ptr++] = I2C1->DATAR;       // read register value from master
+      I2C_FLAG_changed = 1;                       // set register changed flag
+//đọc hết dữ liệu vào thanh ghi, sau đó set cờ =1 báo hiệu đã đọc xong, cờ thay đổi =1. dữ liệu đã sẵn sàng để xử lý
+    }
+  }
+
+  // Byte requested handler
+  if(star1 & I2C_STAR1_TXE) { // nhận được cờ yêu cầu phát ( master gửi request)
+    I2C1->DATAR = I2C_REG[I2C_REG_ptr++];         // send register value to master, diền dữ liệu vào thanh ghi để phát đi
+  }
+
+  // Stop condition handler
+  if(star1 & I2C_STAR1_STOPF) {
+    I2C1->CTLR1 &= ~(I2C_CTLR1_STOP);             // clear stop flag
+  }
+
+  // Wrap around register pointer
+  if(I2C_REG_ptr >= I2C_REG_SIZE) {
+    I2C_REG_ptr = 0;
+  }
+}
+
+///
+int main(void) {
+  // Local variables
+  int16_t rval, rmin, rmax, rstep;          // for handling encoder parameters
+
+  // Setup
+  I2C_init();                               // setup I2C
+  ENC_init();                               // setup rotary encoder
+
+  // Loop
+  while(1) {
+    // Update rotary encoder settings if I2C registers have changed
+    if(I2C_changed() && !I2C_busy()) {
+      INT_disable();                        // disable interrupts for atomic ops
+      rval  = ((uint16_t)I2C_REG[1] << 8) | (uint16_t)I2C_REG[0];
+      rmin  = ((uint16_t)I2C_REG[5] << 8) | (uint16_t)I2C_REG[4];
+      rmax  = ((uint16_t)I2C_REG[7] << 8) | (uint16_t)I2C_REG[6];
+      rstep = ((uint16_t)I2C_REG[9] << 8) | (uint16_t)I2C_REG[8];
+      I2C_clear();                          // clear register changed flag
+      INT_enable();                         // enable interrupts again
+      ENC_set(rmin, rmax, rstep, rval, I2C_REG[3]); // set rotary encoder
+    }
+
+    // Update I2C registers if rotary encoder wheel value has changed
+    if(ENC_read() && !I2C_changed() && !I2C_busy()) {
+      INT_disable();                        // disable interrupts for atomic ops
+      rval = ENC_count >> 1;                // get encoder counter value
+      I2C_REG[0] = (uint8_t)(rval & 0xff);  // store low byte to register //cắt 2byte (ba) lấy 1 byte thấp điền vào thanh ghi trước byte a
+      I2C_REG[1] = (uint8_t)(rval >> 8);    // store high byte to register // cắt lấy byte đầu, gửi đi tiếp theo , byte b
+//đầu master nhận thứ tự  byte a, byte b ==> nhận xong dịch byte b sang trái 8 bit: byte: ba
+      ENC_changed = 0;                      // clear encoder changed flag
+      INT_enable();                         // enable interrupts again
+    }
+
+    // Update rotary encoder switch register
+    I2C_REG[2] = !PIN_read(PIN_ENC_SW);
+  }
